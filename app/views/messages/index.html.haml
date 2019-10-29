@@ -2,44 +2,51 @@
   .chat-side
     .side-header
       .side-header__box
-        .side-header__box__user-name
-        %p 
-          名前書く場所
+        %p3.side-header__box__user-name
+          = current_user.name
         %ul.side-header__box__menu
           %li.side-header__box__menu__new-group
-            = fa_icon 'fa-edit', class: "fa fa-edit"
-          %li.side-header__box__menu__edit-user 
-            = fa_icon 'fa-cog', class: "fa fa-cog"
+            = link_to new_group_path do
+              = fa_icon 'fa-edit', class: "fa fa-edit"
+          %li.side-header__box__menu__edit-user
+            = link_to edit_user_path(current_user.id) do
+              = fa_icon 'fa-cog', class: "fa fa-cog"
 
     .groups
-      %a{href: "#"}
+      - current_user.groups.each do |group|
         .group
-          %p.group__group-name 
-            グループの名前
-          %p.group__latest-message 
-            最新のメッセージ
+          = link_to group_messages_path(group) do
+            .group__group-name 
+              = group.name
+            .group__latest-message 
+              = group.show_last_message
 
   .chat-main
     .main-header
       .main-header__left-box
         %h2.main-header__left-box__current-group
-          グループの名前
+          = @group.name
         %ul.main-header__left-box__member-list
           Member : 
           %li.main-header__left-box__member-list__member
-            自分の名前
+            - @group.users.each do |user|
+              = user.name
+
       %a{href: "#"}
         .main-header__edit-btn
-          Edit
+          = link_to edit_group_path(@group.id) do
+            Edit
 
     .messages
+      = render @messages
+      -# = render patial: "message", collection: @messages と同じ意味
 
     .form
-      %form.new-message
+      = form_for [@group, @message], html: {class: "new-message"} do |f|
+        = f.text_field :content, class: "text", placeholder: "type a message"
         .input-box
-          %input.input-box__text{:name => "message[content]", :type => "text", :placeholder => "type a message"}
-          %label.input-box__label{for: "upload-icon"}
-            %i.fa.fa-picture-o{class: "icon"}
-            %input.none{type: "file", id: "upload-icon"}
+          = f.label :image, class: "input-box__label" do
+            = fa_icon "picture-o", class: "icon"
+            = f.file_field :image, class: "none" 
+        = f.submit "Send", class: "submit-btn"
         
-        %input.submit-btn{:name => "commit", :type => "submit", :value => "Send", :data-disable-with => "Send"}
