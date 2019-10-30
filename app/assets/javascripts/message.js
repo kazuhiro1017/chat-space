@@ -36,7 +36,7 @@ $(function(){
     .done(function(data){
       var html = buildHTML(data);
       $('.messages').append(html)
-      $('#message_content').val('')
+      $('.new-message')[0].reset();
       $('.submit-btn').removeAttr('disabled');
       $('.messages').animate({ scrollTop: $('.messages')[0].scrollHeight});
     })
@@ -45,6 +45,6 @@ $(function(){
     })
     // .always(() => {
     //   $(".submit-btn").removeAttr("disabled");
-    // });                                              $('.submit-btn').removeAttr('disabled');の代用の3行
+    // });                                          メモ $('.submit-btn').removeAttr('disabled');の代用の3行
   })
 }) 
