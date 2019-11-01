@@ -1,7 +1,8 @@
 $(document).on('turbolinks:load', function(){
+
   function buildHTML(message){
-    var image = (message.image ? `<img class="lower-message__image" src="${message.image}">` : "");
-    var html = `<div class="message">
+    var image = message.image.url ? `<img class="lower-message__image" src= ${message.image.url} >` : "";
+    var html = `<div class="message" data-message-id="${message.id}">
                  <div class="upper-message">
                    <div class="upper-message__user-name">
                    ${message.name}
@@ -21,6 +22,8 @@ $(document).on('turbolinks:load', function(){
   }
 
 
+
+
   $('.new-message').on('submit', function(e){
     e.preventDefault();
     var formData = new FormData(this);
@@ -33,8 +36,8 @@ $(document).on('turbolinks:load', function(){
       processData: false,
       contentType: false
     })
-    .done(function(data){
-      var html = buildHTML(data);
+    .done(function(message){
+      var html = buildHTML(message);
       $('.messages').append(html)
       $('.new-message')[0].reset();
       $('.submit-btn').removeAttr('disabled');
@@ -47,4 +50,26 @@ $(document).on('turbolinks:load', function(){
     //   $(".submit-btn").removeAttr("disabled");
     // });                                          メモ $('.submit-btn').removeAttr('disabled');の代用の3行
   })
-}) 
+
+  setInterval(function(){
+  
+    last_message_id = $('.message:last').data("message-id");
+    $.ajax({
+      url: 'api/messages',
+      type: 'GET',
+      dataType: 'json',
+      data: {id: last_message_id}
+    })
+    .done(function(messages){
+      messages.forEach(function(message){
+        var insertHTML = buildHTML(message);
+        $('.messages').append(insertHTML);
+        $('.messages').animate({ scrollTop: $('.messages')[0].scrollHeight});
+      });
+    })
+    .fail(function(){
+      console.log('error');
+    });
+  }, 5000);
+
+});
