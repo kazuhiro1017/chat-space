@@ -67,3 +67,10 @@ gem "factory_bot_rails"
 gem "faker"
 
 gem "jquery-rails"
+
+group :production do
+  gem 'unicorn', '5.4.1'
+end
+# このdo ~ endの間に記述されたgemは本番環境のみで読み込まれます。
+# Unicornは本番環境でのみ必要なので、開発環境下では不要です。
+# さらに、 Unicornの設定ファイルとして、次の内容でファイルを作成しましょう。最初からは存在していないので、自分でconfigディレクトリ以下に作成します。
