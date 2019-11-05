@@ -50,26 +50,28 @@ $(document).on('turbolinks:load', function(){
     //   $(".submit-btn").removeAttr("disabled");
     // });                                          メモ $('.submit-btn').removeAttr('disabled');の代用の3行
   })
-
-  setInterval(function(){
   
+  setInterval(function(){
     last_message_id = $('.message:last').data("message-id");
-    $.ajax({
-      url: 'api/messages',
-      type: 'GET',
-      dataType: 'json',
-      data: {id: last_message_id}
-    })
-    .done(function(messages){
-      messages.forEach(function(message){
-        var insertHTML = buildHTML(message);
-        $('.messages').append(insertHTML);
-        $('.messages').animate({ scrollTop: $('.messages')[0].scrollHeight});
-      });
-    })
-    .fail(function(){
-      alert('error');
-    });
+      if($(".main-header__edit-btn")[0]){
+      // if (document.URL.match(/\/groups\/\d+\/messages/)){
+      // if (document.URL.match("/messages")){                    （メモ）3行全て同じ動き
+        $.ajax({
+          url: 'api/messages',
+          type: 'GET',
+          dataType: 'json',
+          data: {id: last_message_id}
+        })
+        .done(function(messages){
+          messages.forEach(function(message){
+            var insertHTML = buildHTML(message);
+            $('.messages').append(insertHTML);
+            $('.messages').animate({ scrollTop: $('.messages')[0].scrollHeight});
+          });
+        })
+        .fail(function(){
+          alert('error');
+        });  
+      };
   }, 5000);
-
 });
