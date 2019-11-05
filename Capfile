@@ -36,8 +36,8 @@ install_plugin Capistrano::SCM::Git
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
 
-# require "capistrano/setup"     (メモ)上にあるのでこの2行はコメントアウト
-# require "capistrano/deploy"
+require "capistrano/setup"     
+require "capistrano/deploy"
 require 'capistrano/rbenv'
 require 'capistrano/bundler'
 require 'capistrano/rails/assets'
