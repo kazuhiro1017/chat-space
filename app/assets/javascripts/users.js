@@ -16,30 +16,42 @@ $(document).on('turbolinks:load', function (){
               `;
     $("#user-search-result").append(html);
   }
-  function addDeleteUser(name, id) {
+  function addDeleteUser(name, userId) {
     let html = `
-    <div class="chat-group-user clearfix" id="${id}">
+    <div class="chat-group-user clearfix" id="${userId}">
       <p class="chat-group-user__name">${name}</p>
-      <a class="user-search-remove chat-group-user__btn" data-user-id="${id}" data-user-name="${name}">削除</a>
+      <a class="user-search-remove chat-group-user__btn" data-user-id="${userId}" data-user-name="${name}">削除</a>
     </div>`;
     $(".js-add-user").append(html);
   }
   function addMember(userId) {
-    let html = `<input value="${userId}" name="group[user_ids][]" type="hidden" id="group_user_ids_${userId}" />`;
+    let html = `<input class="user-id" value="${userId}" name="group[user_ids][]" type="hidden" id="group_user_ids_${userId}" />`;
     $(`#${userId}`).append(html);
   }
+
+  var userIds =[]
+  
+  function builduserIds(){
+    $(".user-id").map(function(){
+      let userId= $(this).val();
+      userIds.push(userId)
+    })
+  }
+
+  builduserIds();
  
   $("#user-search-field").on("keyup", function(){
     let input = $("#user-search-field").val();
+    
     $.ajax({
       type: 'GET',
       url: '/users',
-      data: { keyword: input },
+      data: { keyword: input, userIds: userIds },
       dataType: 'json'
     })
     .done(function(users){
       $("#user-search-result").empty();
-
+      
       if (users.length !== 0){
         users.forEach(function(user){
           addUser(user);
@@ -62,8 +74,10 @@ $(document).on('turbolinks:load', function (){
     $(this).parent().remove();
     addDeleteUser(userName, userId);
     addMember(userId);
+    builduserIds();
   });
   $(document).on("click", ".user-search-remove", function() {
     $(this).parent().remove();
+    builduserIds();
   });
 });
