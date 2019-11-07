@@ -1,4 +1,5 @@
 $(document).on('turbolinks:load', function (){
+  
   function addUser(user){
     var html = `
               <div class="chat-group-user clearfix">
@@ -8,6 +9,7 @@ $(document).on('turbolinks:load', function (){
               `;
     $("#user-search-result").append(html);
   }
+
   function addNoUser(){
     var html = `
               <div class="chat-group-user clearfix">
@@ -16,6 +18,7 @@ $(document).on('turbolinks:load', function (){
               `;
     $("#user-search-result").append(html);
   }
+
   function addDeleteUser(name, userId) {
     let html = `
     <div class="chat-group-user clearfix" id="${userId}">
@@ -24,22 +27,30 @@ $(document).on('turbolinks:load', function (){
     </div>`;
     $(".js-add-user").append(html);
   }
+
   function addMember(userId) {
     let html = `<input class="user-id" value="${userId}" name="group[user_ids][]" type="hidden" id="group_user_ids_${userId}" />`;
     $(`#${userId}`).append(html);
   }
 
+
+  
   var userIds =[]
   
   function builduserIds(){
     $(".user-id").map(function(){
-      let userId= $(this).val();
+      let userId = $(this).val();
       userIds.push(userId)
     })
   }
-
+  
+  function emptyofarray(){
+    userIds = [];
+  }
+  
   builduserIds();
- 
+  
+  
   $("#user-search-field").on("keyup", function(){
     let input = $("#user-search-field").val();
     
@@ -49,6 +60,7 @@ $(document).on('turbolinks:load', function (){
       data: { keyword: input, userIds: userIds },
       dataType: 'json'
     })
+
     .done(function(users){
       $("#user-search-result").empty();
       
@@ -68,16 +80,21 @@ $(document).on('turbolinks:load', function (){
       alert("error");
     });
   });
+
+
   $("#user-search-result").on("click", ".user-search-add", function() {
     const userName = $(this).attr("data-user-name");
     const userId = $(this).attr("data-user-id");
     $(this).parent().remove();
     addDeleteUser(userName, userId);
     addMember(userId);
+    emptyofarray();
     builduserIds();
   });
+
   $(document).on("click", ".user-search-remove", function() {
     $(this).parent().remove();
+    emptyofarray();
     builduserIds();
   });
 });
