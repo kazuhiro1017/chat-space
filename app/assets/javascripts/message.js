@@ -41,7 +41,7 @@ $(document).on('turbolinks:load', function(){
       $('.messages').append(html)
       $('.new-message')[0].reset();
       $('.submit-btn').removeAttr('disabled');
-      $('.messages').animate({ scrollTop: $('.messages')[0].scrollHeight});
+      $('.messages').animate({ scrollTop: $('.messages')[0].scrollHeight}, 'fast');    //  'slow','normal','fast'のどれかをつけるとミリ単位で(ちょっとだけ)スクロールのスピードが変わるよ〜
     })
     .fail(function(){
       alert('error');
