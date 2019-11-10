@@ -48,7 +48,10 @@ $(document).on('turbolinks:load', function (){
     userIds = [];
   }
   
-  builduserIds();
+  builduserIds();     
+  // ページ潜入後、builduserIds();をしてgroupにいるuserIdsの配列を作らないと、
+  // modelに書いたsearchメソッドの.where.not(id: userIds)の部分に空の配列が入ってしまい、
+  // 現在入っているユーザーまでsearchしてしまうのでUI的にもよくない。
   
   
   $("#user-search-field").on("keyup", function(){
@@ -60,7 +63,7 @@ $(document).on('turbolinks:load', function (){
       data: { keyword: input, userIds: userIds },
       dataType: 'json'
     })
-
+    
     .done(function(users){
       $("#user-search-result").empty();
       
@@ -80,8 +83,8 @@ $(document).on('turbolinks:load', function (){
       alert("error");
     });
   });
-
-
+  
+  
   $("#user-search-result").on("click", ".user-search-add", function() {
     const userName = $(this).attr("data-user-name");
     const userId = $(this).attr("data-user-id");
